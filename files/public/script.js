@@ -1,4 +1,6 @@
-const tmdbKey = 'fd8d3a88e2b354d713f2ca0b42c7a247';
+// TODO: Please paste your own API Key in tmdbKey
+const tmdbKey = 'fill in you personal API key here'; //TODO: Delete this line after finishing the project
+
 const tmdbBaseUrl = 'https://api.themoviedb.org/3/';
 const playBtn = document.getElementById('playBtn');
 
@@ -33,7 +35,7 @@ const getGenres = async () => {
 
 const getMovies = async () => {
     const selectedGenre = getSelectedGenre();
-    const discoverMovieEndpoint = "/discover/movie";
+    const discoverMovieEndpoint = "discover/movie";
     const requestParams = `?api_key=${tmdbKey}&with_genres=${selectedGenre}`;
     const urlToFetch = `${tmdbBaseUrl}${discoverMovieEndpoint}${requestParams}`;
 
@@ -60,7 +62,7 @@ const getMovieInfo = async (movie) => {
         const response = await fetch(urlToFetch);
         if(response.ok){
             const jsonResponse = await response.json();
-            const movieInfo = jsonResponse;
+            const movieInfo = jsonResponse.movies;
             return movieInfo;
         }
     } catch (error) {
@@ -70,12 +72,17 @@ const getMovieInfo = async (movie) => {
 
 
 // Gets a list of movies and ultimately displays the info of a random movie from the list
-const showRandomMovie = () => {
-    const movieInfo = document.getElementById("movieInfo");
+const showRandomMovie = async () => {
+    const movieInfo = document.getElementById('movieInfo');
     if (movieInfo.childNodes.length > 0) {
         clearCurrentMovie();
     }
+    const movies = await getMovies();
+    const randomMovie = getRandomMovie(movies);
+    const info = await getMovieInfo(randomMovie)
+   await displayMovie(info);
 };
+
 
 getGenres().then(populateGenreDropdown);
 playBtn.onclick = showRandomMovie;
